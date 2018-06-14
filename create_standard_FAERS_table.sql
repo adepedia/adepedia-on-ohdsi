@@ -4,7 +4,7 @@
 --Need to conduct the AEOLUS process first!
 --Only for the FAERS data after Sep. 2012.
 --GitHub of AEOLUS: https://github.com/ltscomputingllc/faersdbstats
---[1]Banda, J.M., et al., A curated and standardized adverse drug event resource to accelerate drug safety research. Sci Data, 2016. 3: p. 160026.
+--[1] Banda, J.M., et al., A curated and standardized adverse drug event resource to accelerate drug safety research. Sci Data, 2016. 3: p. 160026.
 
 
 create schema standard_faers;
