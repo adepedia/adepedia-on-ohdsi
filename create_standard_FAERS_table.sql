@@ -1,8 +1,11 @@
+--These codes are focus on 
+based on the de-duplication and drug name/adverse events normalization.
+
 create schema standard_faers;
 set search_path = standard_faers;
 
---1.建立standard_demo表
---1.1导入demo表数据，并去除重复
+--1. create standard_demo table
+--1.1. input FAERS demo table data，then conduct de-duplication 
 drop table if exists standard_demo;
 create table standard_demo as 
 select a.* from faers.demo a,faers.unique_all_case b where a.primaryid = b.primaryid;
@@ -11,7 +14,7 @@ delete from standard_demo
 where primaryid in (select primaryid from standard_demo group by primaryid having count(primaryid) > 1) 
 and ctid not in (select max(ctid) from standard_demo group by primaryid having count(primaryid)>1);
 
---1.2.update demo表，补充缺失值
+--1.2. update demo table，input missing value
 update standard_demo a
 set event_dt = b.event_dt, 
     age = b.age, 
