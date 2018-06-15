@@ -27,8 +27,12 @@ alter table condition_occurrence alter condition_source_value type varchar(100);
 
 truncate table condition_occurrence;
 insert into condition_occurrence(condition_occurrence_source_id, person_id, condition_concept_id, condition_source_value)
+(select cast((primaryid || indi_drug_seq) as bigint), cast(caseid as int), snomed_indication_concept_id, indi_pt 
+from standard_faers.standard_indi where snomed_indication_concept_id is not null);
+
+insert into condition_occurrence(condition_occurrence_source_id, person_id, condition_concept_id, condition_source_value)
 (select cast((primaryid || indi_drug_seq) as bigint), cast(caseid as int), indication_concept_id, indi_pt 
-from standard_faers.standard_indi);
+from standard_faers.standard_indi where snomed_indication_concept_id is null);
 
 --3.2. Input condition_type_concept_id(45905770, Patient Self-Reported Condition)
 update condition_occurrence
