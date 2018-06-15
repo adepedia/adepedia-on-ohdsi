@@ -15,7 +15,7 @@ truncate table death;
 insert into death(person_id, death_type_concept_id) 
 (select cast(caseid as int), '38003566' from standard_faers.standard_outc where outc_code = 'DE');
 
---4.2.导入death_type_concept_id和death_date
+--4.2. Impute death_date (The last end date of the therapy for a death patient will be seen as the death date)
 with cte1 as
 (
 	select cast(caseid as int) as rnid,to_date(end_dt,'YYYYMMDD') as dt, row_number()over(partition by caseid order by end_dt desc) as rn
@@ -25,5 +25,4 @@ update death a
 set death_date = cte1.dt
 from cte1
 where cte1.rnid = a.person_id and cte1.rn = 1;
-
 
