@@ -7,6 +7,7 @@
 --[1] Banda, J.M., et al., A curated and standardized adverse drug event resource to accelerate drug safety research. Sci Data, 2016. 3: p. 160026.
 
 
+
 create schema standard_faers;
 set search_path = standard_faers;
 
