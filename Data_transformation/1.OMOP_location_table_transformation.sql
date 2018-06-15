@@ -24,17 +24,3 @@ cte2 as
 )
 insert into location(location_id, location_source_value) (select * from cte2); 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
