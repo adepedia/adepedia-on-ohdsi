@@ -95,3 +95,5 @@ update person a
 set year_of_birth = extract(year from b.year_temp)
 from standard_faers.standard_demo b
 where a.person_id = cast(b.caseid as int);
+
+
