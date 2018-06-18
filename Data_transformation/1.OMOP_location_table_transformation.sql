@@ -2,6 +2,8 @@
 --There is no required fields in temporary schema in order to facility the data transformation.
 --The OMOP schema must be built first! (The public schema in codes is the OMOP CDM schema)
 
+--The location table in our project mainly stored the adverse event report country information.
+
 create schema public_temp;
 set search_path = public_temp;
 

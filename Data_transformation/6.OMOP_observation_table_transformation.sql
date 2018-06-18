@@ -2,6 +2,8 @@
 --There is no required fields in temporary schema in order to facility the data transformation.
 --The OMOP schema must be built first! (The public schema in codes is the OMOP CDM schema)
 
+--The observation table in our project mainly stored the adverse events records and outcome information of the patient.
+
 create schema public_temp;
 set search_path = public_temp;
 
@@ -22,14 +24,14 @@ create sequence observation_id_seq
 alter table observation alter column observation_id set default nextval('observation_id_seq');
 alter table observation alter observation_source_value type varchar;
 
---导入adverse event
+--6.1. Input adverse event
 truncate table observation;
 insert into observation(person_id, observation_concept_id,
 observation_type_concept_id, qualifier_concept_id,observation_source_value)
 (select cast(caseid as int), outcome_concept_id, '44814721', '44788367', pt
 from standard_faers.standard_reac);
 
---导入outcome类型
+--6.2. Input outcome concept id
 update standard_faers.standard_outc
 set snomed_concept_id = 
 	case when outc_code = 'DE' then 4306655
@@ -49,7 +51,7 @@ observation_type_concept_id, qualifier_concept_id,observation_source_value)
 from standard_faers.standard_outc
 where outc_code is not null);
 
---导入event_dt
+--6.3. Input event_dt
 update observation a
 set observation_date = to_date(b.event_dt, 'YYYYMMDD')
 from standard_faers.standard_demo b

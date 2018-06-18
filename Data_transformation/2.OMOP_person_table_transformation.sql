@@ -2,6 +2,7 @@
 --There is no required fields in temporary schema in order to facility the data transformation.
 --The OMOP schema must be built first! (The public schema in codes is the OMOP CDM schema)
 
+--The person table in our project mainly stored the demographic information of the patient.
 --In order to input location data, the location table transformation must be conducted before this code.
 
 create schema public_temp;
