@@ -1,8 +1,11 @@
---建立临时schema，注意为了便于导入数据，临时schema中的表是不存在not null约束的
+--Create temporary schema to store the transformed data.
+--There is no required fields in temporary schema in order to facility the data transformation.
+--The OMOP schema must be built first! (The public schema in codes is the OMOP CDM schema)
+
 create schema public_temp;
 set search_path = public_temp;
 
---6.mapping observation table
+--6.Transforming observation table
 --observation_id长度不够，改为bigint, observation_source_value长度不够，改为不定长
 drop table if exists observation;
 create table observation as 

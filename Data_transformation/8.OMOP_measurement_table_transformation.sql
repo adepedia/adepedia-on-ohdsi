@@ -1,15 +1,17 @@
---建立临时schema，注意为了便于导入数据，临时schema中的表是不存在not null约束的
+--Create temporary schema to store the transformed data.
+--There is no required fields in temporary schema in order to facility the data transformation.
+--The OMOP schema must be built first! (The public schema in codes is the OMOP CDM schema)
+
 create schema public_temp;
 set search_path = public_temp;
 
---8.mapping measurement table
+--8.Transforming measurement table
 drop table if exists measurement;
 create table measurement as 
 (select * from public.measurement limit 0);
 
 alter table standard_faers.standard_demo add column wt_temp varchar;
 alter table standard_faers.standard_demo add column wt_unit_temp varchar;
-
 
 drop sequence if exists measurement_id_seq;
 create sequence measurement_id_seq
@@ -21,6 +23,7 @@ create sequence measurement_id_seq
     
 alter table measurement alter column measurement_id set default nextval('measurement_id_seq');
 
+--Formatting weight value and unit
 update standard_faers.standard_demo
 set wt_temp = 
 	case when wt ~ '^\.' then ('0' || wt)
@@ -48,6 +51,7 @@ set wt_unit_temp =
 	end
 where wt_cod is not null;
 
+--Input all fields
 insert into measurement(person_id, measurement_concept_id, measurement_date,
 measurement_type_concept_id, value_as_number, unit_concept_id, unit_source_value, value_source_value)
 (select cast(caseid as int), '3025315', to_date(event_dt, 'YYYYMMDD'), 

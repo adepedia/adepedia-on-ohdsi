@@ -1,8 +1,11 @@
---建立临时schema，注意为了便于导入数据，临时schema中的表是不存在not null约束的
+--Create temporary schema to store the transformed data.
+--There is no required fields in temporary schema in order to facility the data transformation.
+--The OMOP schema must be built first! (The public schema in codes is the OMOP CDM schema)
+
 create schema public_temp;
 set search_path = public_temp;
 
---7.mapping fact_relationship table
+--7.Transforming fact_relationship table
 drop table if exists fact_relationship;
 create table fact_relationship as 
 (select * from public.fact_relationship limit 0);

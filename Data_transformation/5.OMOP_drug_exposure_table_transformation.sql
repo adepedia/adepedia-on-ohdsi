@@ -5,9 +5,8 @@
 create schema public_temp;
 set search_path = public_temp;
 
---5.mapping drug_exposure table
+--5.Transforming drug_exposure table
 --5.1.导入drug_exposure_id, person_id, drug_concept_id, lot_number, drug_source_value, route_source_value, dose_unit_source_value
---primaryid+drug_seq超出int范围，故将drug_exposure_id数据类型改为bigint
 --lot_number, drug_source_value长度不够，改为不定长
 drop table if exists drug_exposure;
 create table drug_exposure as 
