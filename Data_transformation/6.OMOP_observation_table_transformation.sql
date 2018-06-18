@@ -8,7 +8,7 @@ create schema public_temp;
 set search_path = public_temp;
 
 --6.Transforming observation table
---50 characters are not enough for the field "observation_source_value", so change the field type to varchar(variable unlimited length).
+--50 characters are not enough for the field "observation_source_value", so we change the field type to varchar(variable unlimited length).
 
 drop table if exists observation;
 create table observation as 

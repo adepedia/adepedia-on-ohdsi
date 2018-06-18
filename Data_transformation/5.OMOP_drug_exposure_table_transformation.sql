@@ -2,12 +2,16 @@
 --There is no required fields in temporary schema in order to facility the data transformation.
 --The OMOP schema must be built first! (The public schema in codes is the OMOP CDM schema)
 
+--The drug_exposure table in our project mainly stored the drug use information of the patient.
+
 create schema public_temp;
 set search_path = public_temp;
 
---5.Transforming drug_exposure table
---5.1.导入drug_exposure_id, person_id, drug_concept_id, lot_number, drug_source_value, route_source_value, dose_unit_source_value
---lot_number, drug_source_value长度不够，改为不定长
+--5. Transforming drug_exposure table
+--5.1. Input drug_exposure_id, person_id, drug_concept_id, lot_number, drug_source_value, route_source_value, dose_unit_source_value
+--We use "primaryid" + "drug_seq" in FAERS to represent drug_exposure_source_id, but the string length exceed the range of int, so we change the type of drug_exposure_source_id into bigint，
+--50 characters are not enough for the field "lot_number" and "drug_source_value", so we change the field type to varchar(variable unlimited length).
+
 drop table if exists drug_exposure;
 create table drug_exposure as 
 (select * from public.drug_exposure limit 0);
@@ -37,66 +41,44 @@ insert into drug_exposure
  dose_unit
 from standard_faers.standard_drug);
 
---5.2.规范化并选择单方剂量(不包括复方剂量)，并导入effective_drug_dose
-update standard_faers.standard_drug 
-set dose_amt = trim(dose_amt);
+--Formatting and inputing the effective_drug_dose field.
+--Those following codes are only used for OMOP CDM v5.0. 
+--The effective_drug_dose field is removed from the drug_exposure table in the latest OMOP CDM version.
 
-update standard_faers.standard_drug
-set dose_amt = regexp_replace(dose_amt, '\t', '')
-where dose_amt ~ '\t';
+--alter table standard_faers.standard_drug add column dose_amt_temp varchar;
+--update standard_faers.standard_drug set dose_amt_temp = trim(dose_amt);
+--update standard_faers.standard_drug set dose_amt_temp = regexp_replace(dose_amt_temp, '\t', '') where dose_amt_temp ~ '\t';
+--update standard_faers.standard_drug set dose_amt_temp = replace(dose_amt_temp,',','') where dose_amt_temp ~ '^[0-9]+\,[0-9][0-9][0-9]' and dose_amt_temp !~ '\/' and dose_amt_temp !~ '\-';
+--update standard_faers.standard_drug set dose_amt_temp = cast(cast(regexp_replace(dose_amt_temp, '[A-Za-z]+', '') as numeric) * 1000000 as varchar) where dose_amt_temp ~ 'MIL' and dose_amt_temp !~ '\/' and dose_amt_temp !~ '\-';
+--update standard_faers.standard_drug set dose_amt_temp = regexp_replace(dose_amt_temp, '[A-Za-z]+', '') where dose_amt_temp ~ '^[0-9]+\.*[0-9]*\s*MG' and dose_amt_temp !~ '\/' and dose_amt_temp !~ '\-';
+--update standard_faers.standard_drug set dose_amt_temp = ('0' || dose_amt_temp) where dose_amt_temp ~ '^\.[0-9]+\.*[0-9]*$';
+--update standard_faers.standard_drug set dose_amt_temp = replace(dose_amt_temp,'.','') where dose_amt_temp ~ '\.$' and dose_amt_temp !~ '\/' and dose_amt_temp !~ '\-';
+--update standard_faers.standard_drug set dose_amt_temp = regexp_replace(dose_amt_temp,'\.\.+','\.') where dose_amt_temp ~ '\.\.+' and dose_amt_temp !~ '\/' and dose_amt_temp !~ '\-';
 
-update standard_faers.standard_drug
-set dose_amt = replace(dose_amt,',','')
-where dose_amt ~ '^[0-9]+\,[0-9][0-9][0-9]' and dose_amt !~ '\/' and dose_amt !~ '\-';
+--drop index if exists drug_exposure_index;
+--create index drug_exposure_index on drug_exposure(drug_exposure_source_id);
 
-update standard_faers.standard_drug
-set dose_amt = cast(cast(regexp_replace(dose_amt, '[A-Za-z]+', '') as numeric) * 1000000 as varchar)
-where dose_amt ~ 'MIL' and dose_amt !~ '\/' and dose_amt !~ '\-';
+--alter table standard_faers.standard_drug add column drug_exposure_id bigint;
+--update standard_faers.standard_drug set drug_exposure_id = cast((primaryid || drug_seq) as bigint)
 
-update standard_faers.standard_drug
-set dose_amt = regexp_replace(dose_amt, '[A-Za-z]+', '')
-where dose_amt ~ '^[0-9]+\.*[0-9]*\s*MG' and dose_amt !~ '\/' and dose_amt !~ '\-';
+--drop index if exists standard_faers.standard_drug_index;
+--create index standard_drug_index on standard_faers.standard_drug(drug_exposure_id);
 
-update standard_faers.standard_drug
-set dose_amt = ('0' || dose_amt)
-where dose_amt ~ '^\.[0-9]+\.*[0-9]*$';
+--The execution time of effective_drug_dose value inputing is about 10min
 
-update standard_faers.standard_drug
-set dose_amt = replace(dose_amt,'.','')
-where dose_amt ~ '\.$' and dose_amt !~ '\/' and dose_amt !~ '\-';
+--update drug_exposure a
+--set effective_drug_dose = cast(b.dose_amt_temp as numeric)
+--from standard_faers.standard_drug b
+--where (dose_amt_temp ~ '^[0-9]+\.*[0-9]+$' or dose_amt_temp ~ '^[0-9]+$') 
+--and dose_amt_temp !~ '\/' and dose_amt_temp !~ '\-'
+--and dose_amt_temp is not null
+--and a.drug_exposure_source_id = b.drug_exposure_id;
 
-update standard_faers.standard_drug
-set dose_amt = regexp_replace(dose_amt,'\.\.+','\.')
-where dose_amt ~ '\.\.+' and dose_amt !~ '\/' and dose_amt !~ '\-';
+--5.2. Input drug_type_concept_id(44787730,Patient Self-Reported Medication)
+update drug_exposure set drug_type_concept_id = '44787730';
 
-drop index if exists drug_exposure_index;
-create index drug_exposure_index on drug_exposure(drug_exposure_source_id);
-
-alter table standard_faers.standard_drug
-add column drug_exposure_id bigint;
-
-update standard_faers.standard_drug
-set drug_exposure_id = cast((primaryid || drug_seq) as bigint)
-
-drop index if exists standard_faers.standard_drug_index;
-create index standard_drug_index on standard_faers.standard_drug(drug_exposure_id);
-
---about 10min
-update drug_exposure a
-set effective_drug_dose = cast(b.dose_amt as numeric)
-from standard_faers.standard_drug b
-where (dose_amt ~ '^[0-9]+\.*[0-9]+$' or dose_amt ~ '^[0-9]+$') 
-and dose_amt !~ '\/' and dose_amt !~ '\-'
-and dose_amt is not null
-and a.drug_exposure_source_id = b.drug_exposure_id;
-
---5.3.导入drug_type_concept_id(44787730,Patient Self-Reported Medication)
-update drug_exposure
-set drug_type_concept_id = '44787730';
-
---5.4.导入route_concept_id
-alter table standard_faers.standard_drug
-add column route_temp int;
+--5.3. Input route_concept_id
+alter table standard_faers.standard_drug add column route_temp int;
 
 update standard_faers.standard_drug a 
 set route_temp = 
@@ -195,6 +177,15 @@ set route_temp =
 	end
 where a.route is not null;
 
+drop index if exists drug_exposure_index;
+create index drug_exposure_index on drug_exposure(drug_exposure_source_id);
+
+alter table standard_faers.standard_drug add column drug_exposure_id bigint;
+update standard_faers.standard_drug set drug_exposure_id = cast((primaryid || drug_seq) as bigint)
+
+drop index if exists standard_faers.standard_drug_index;
+create index standard_drug_index on standard_faers.standard_drug(drug_exposure_id);
+
 --10mins
 update drug_exposure a
 set route_concept_id = b.route_temp
@@ -202,7 +193,7 @@ from standard_faers.standard_drug b
 where a.drug_exposure_source_id = b.drug_exposure_id
 and b.route_temp is not null;
 
---5.5.导入dose_unit_concept_id
+--5.4. Input dose_unit_concept_id
 alter table standard_faers.standard_drug
 add column unit_temp int;
 
