@@ -8,7 +8,8 @@ create schema public_temp;
 set search_path = public_temp;
 
 --6.Transforming observation table
---observation_id长度不够，改为bigint, observation_source_value长度不够，改为不定长
+--50 characters are not enough for the field "observation_source_value", so change the field type to varchar(variable unlimited length).
+
 drop table if exists observation;
 create table observation as 
 (select * from public.observation limit 0);
@@ -32,11 +33,13 @@ observation_type_concept_id, qualifier_concept_id,observation_source_value)
 from standard_faers.standard_reac);
 
 --6.2. Input outcome concept id
+alter table standard_faers.standard_outc add column outc_concept_id int;
+
 update standard_faers.standard_outc
-set snomed_concept_id = 
+set outc_concept_id = 
 	case when outc_code = 'DE' then 4306655
 	when outc_code = 'LT' then 40483553
-	when outc_code = 'HO' then 45948213
+	when outc_code = 'HO' then 8715
 	when outc_code = 'DS' then 37420519
 	when outc_code = 'CA' then 4029540
 	when outc_code = 'RI' then 4191370
@@ -47,11 +50,11 @@ where outc_code is not null;
 
 insert into observation(person_id, observation_concept_id,
 observation_type_concept_id, qualifier_concept_id,observation_source_value)
-(select cast(caseid as int), snomed_concept_id, '44814721', '44803440', outc_code
+(select cast(caseid as int), outc_concept_id, '44814721', '44803440', outc_code
 from standard_faers.standard_outc
 where outc_code is not null);
 
---6.3. Input event_dt
+--6.3. Input observation_date
 update observation a
 set observation_date = to_date(b.event_dt, 'YYYYMMDD')
 from standard_faers.standard_demo b
