@@ -8,6 +8,7 @@ create schema public_temp;
 set search_path = public_temp;
 
 --6.Transforming observation table
+--6.1. Create observation table
 --50 characters are not enough for the field "observation_source_value", so we change the field type to varchar(variable unlimited length).
 
 drop table if exists observation;
@@ -25,14 +26,14 @@ create sequence observation_id_seq
 alter table observation alter column observation_id set default nextval('observation_id_seq');
 alter table observation alter observation_source_value type varchar;
 
---6.1. Input adverse event
+--6.2. Input adverse event
 truncate table observation;
 insert into observation(person_id, observation_concept_id,
 observation_type_concept_id, qualifier_concept_id,observation_source_value)
 (select cast(caseid as int), outcome_concept_id, '44814721', '44788367', pt
 from standard_faers.standard_reac);
 
---6.2. Input outcome concept id
+--6.3. Input outcome_concept_id
 alter table standard_faers.standard_outc add column outc_concept_id int;
 
 update standard_faers.standard_outc
@@ -54,7 +55,7 @@ observation_type_concept_id, qualifier_concept_id,observation_source_value)
 from standard_faers.standard_outc
 where outc_code is not null);
 
---6.3. Input observation_date
+--6.4. Input observation_date
 update observation a
 set observation_date = to_date(b.event_dt, 'YYYYMMDD')
 from standard_faers.standard_demo b
