@@ -5,6 +5,7 @@
 
 set search_path = public_temp;
 
+--1.1 Loading temporary location table data into OHDSI CDM.
 with cte1 as
 (
 	select count(*) as qu from public.location
