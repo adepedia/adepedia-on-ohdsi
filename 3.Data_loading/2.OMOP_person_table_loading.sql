@@ -4,7 +4,6 @@
 
 --The location table loading must be conducted before this code!
 
-
 set search_path = public_temp;
 
 --2.1 Inputting 0 for the null value of the required fields.
