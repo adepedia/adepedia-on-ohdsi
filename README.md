@@ -7,4 +7,4 @@ The development of ETL scripts to load ADE datasets into the OHDSI CDM.
 
 * Yu Y, Ruddy KJ, Hong N, Tsuji S,Shah N, Jiang G. Developing A Standards-based Signal Detection and Validation Framework of Immune-related Adverse Events Using the OHDSI Common Data Model. AMIA Annual Symposium 2018. [Podium Abstract](https://symposium2018.zerista.com/event/member/508534)
 
-* Yu Y, Ruddy KJ, Hong N, Tsuji S, Shah N, Jiang G. ADEpedia-on-OHDSI: A Next Generation Pharmacovigilance Signal Detection Platform Using the OHDSI Common Data Model. J Biomed Inform. 2019 Feb 7:103119. doi: 10.1016/j.jbi.2019.103119. [PubMed] (https://www.ncbi.nlm.nih.gov/pubmed/30738946)
+* Yu Y, Ruddy KJ, Hong N, Tsuji S, Shah N, Jiang G. ADEpedia-on-OHDSI: A Next Generation Pharmacovigilance Signal Detection Platform Using the OHDSI Common Data Model. J Biomed Inform. 2019 Feb 7:103119. doi: 10.1016/j.jbi.2019.103119. [PubMed](https://www.ncbi.nlm.nih.gov/pubmed/30738946)
