@@ -8,7 +8,7 @@ The development of ETL scripts to load FDA adverse event reporting system (FAERS
   GitHub of AEOLUS: https://github.com/ltscomputingllc/faersdbstats  
   Publication of AEOLUS: Banda, J.M., et al., A curated and standardized adverse drug event resource to accelerate drug safety research. Sci Data, 2016. 3: p. 160026. [PubMed](https://www.ncbi.nlm.nih.gov/pubmed/27193236)
   
-* After AEOLUS implemention, you can conduct our ETL tool as following order: 1.
+* After AEOLUS implemention, you can conduct our ETL tool as following order: 1.FAERS_standardization; 
 
 * For more details such as mapping rules and information loss about this tool, you can find them in this paper:
 
