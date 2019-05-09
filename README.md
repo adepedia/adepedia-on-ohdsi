@@ -1,5 +1,5 @@
 # adepedia-on-ohdsi
-The development of ETL scripts to load ADE datasets into the OHDSI CDM.
+The development of ETL scripts to load FDA adverse event reporting system (FAERS) datasets into the OHDSI (OMOP) CDM.
 
 # Publications
 
