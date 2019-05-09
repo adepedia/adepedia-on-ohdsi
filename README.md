@@ -1,7 +1,7 @@
 # adepedia-on-ohdsi
 The development of ETL scripts to load FDA adverse event reporting system (FAERS) datasets into the OHDSI (OMOP) CDM.
 
-* In recent version, this ETL tool could convert the [FAERS](https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html) data after Sep. 2012 into OHDSI CDM (v5.0).
+* In current version, this ETL tool could convert the [FAERS](https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html) data after Sep. 2012 into [OHDSI CDM](https://ohdsi.org/) (v5.0).
   
 * For the data de-duplication and drug name standardization, you need to implement the AEOLUS process first.
   
