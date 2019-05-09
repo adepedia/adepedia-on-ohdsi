@@ -12,7 +12,7 @@ The development of ETL scripts to load FDA adverse event reporting system (FAERS
 
 * For more details such as mapping rules and information loss about this tool, you can find them in this paper:
 
-Yu Y, Ruddy KJ, Hong N, Tsuji S, Shah N, Jiang G. ADEpedia-on-OHDSI: A Next Generation Pharmacovigilance Signal Detection Platform Using the OHDSI Common Data Model. J Biomed Inform. 2019 Feb 7:103119. doi: 10.1016/j.jbi.2019.103119. [PubMed](https://www.ncbi.nlm.nih.gov/pubmed/30738946)
+  Yu Y, Ruddy KJ, Hong N, Tsuji S, Shah N, Jiang G. ADEpedia-on-OHDSI: A Next Generation Pharmacovigilance Signal Detection Platform Using the OHDSI Common Data Model. J Biomed Inform. 2019 Feb 7:103119. doi: 10.1016/j.jbi.2019.103119. [PubMed](https://www.ncbi.nlm.nih.gov/pubmed/30738946)
   
   
 
