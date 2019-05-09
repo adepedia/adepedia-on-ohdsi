@@ -3,7 +3,7 @@ The development of ETL scripts to load FDA adverse event reporting system (FAERS
 
 * In current version, this ETL tool could convert the [FAERS](https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html) data after Sep. 2012 into [OHDSI CDM](https://ohdsi.org/) (v5.0).
   
-* For the data de-duplication and drug name standardization, you need to implement the AEOLUS process first.
+* For the FAERS data de-duplication and drug name standardization, you need to implement the AEOLUS process first.
   
   GitHub of AEOLUS: https://github.com/ltscomputingllc/faersdbstats  
   Publication of AEOLUS: Banda, J.M., et al., A curated and standardized adverse drug event resource to accelerate drug safety research. Sci Data, 2016. 3: p. 160026. [PubMed](https://www.ncbi.nlm.nih.gov/pubmed/27193236)
